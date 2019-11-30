@@ -7,6 +7,7 @@ const MongoClient = mongodb.MongoClient
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
 
+// By picking a db name then connecting, MongoDB will automatically create the db if not exists
 // useNewUrlParser needed to pass connectionURL correctly
 MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
     // Callback function once the connect operation is complete
@@ -14,5 +15,10 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
         return console.log('Unable to connect to database!')
     }
 
-    console.log('Connected!')
+    // Get the database connection
+    const db = client.db(databaseName)
+    db.collection('users').insertOne({
+        name: 'Mike',
+        age: 23
+    })
 })
