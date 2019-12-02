@@ -127,4 +127,14 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
     }).catch((error) => {
         console.log(error)
     })
+
+    // Delete one task
+    db.collection('tasks').deleteOne({
+        // Filter 
+        time: 25
+    }).then((result) => {
+        console.log(result)
+    }).catch((error) => {
+        console.log(error)
+    })
 })
