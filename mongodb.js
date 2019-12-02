@@ -118,5 +118,13 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
         console.log(error)
     })
 
-
+    // Delete a user; Callback not needed since we are using a promise
+    db.collection('users').deleteMany({
+        // Filter
+        age: 23
+    }).then((result) => {
+        console.log(result)
+    }).catch((error) => {
+        console.log(error)
+    })
 })
