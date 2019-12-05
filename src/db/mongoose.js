@@ -27,3 +27,26 @@ me.save().then(() => {
 }).catch((error) => {
     console.log(error)
 })
+
+// Create task model; Mongoose takes model name, makes it lower case and plural
+const Task = mongoose.model('Task', {
+    description: {
+        type: String
+    },
+    completed: {
+        type: Boolean
+    }
+})
+
+// Create a task instance
+const task = new Task({
+    description: 'Go to gym',
+    completed: false
+})
+
+// Saves the instance and returns a promise
+task.save().then(() => {
+    console.log(task)
+}).catch((error) => {
+    console.log(error)
+})
