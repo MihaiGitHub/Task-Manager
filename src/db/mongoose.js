@@ -32,6 +32,17 @@ const User = mongoose.model('User', {
                 throw new Error('Age must be a positive number')
             }
         }
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 7,
+        validate(value){
+            if(value.toLowerCase().includes('password')){
+                throw new Error('Password cannot contain "password"') 
+            }
+        }
     }
 })
 
@@ -39,7 +50,8 @@ const User = mongoose.model('User', {
 const me = new User({
     name: 'Mike',
     age: 23,
-    email: 'mike@yahoo.com'
+    email: 'mike@yahoo.com',
+    password: 'pas6ysword1234'
 })
 
 // Saves the instance and returns a promise
@@ -52,10 +64,13 @@ me.save().then(() => {
 // Create task model; Mongoose takes model name, makes it lower case and plural
 const Task = mongoose.model('Task', {
     description: {
-        type: String
+        type: String,
+        required: true,
+        trim: true
     },
     completed: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 })
 
