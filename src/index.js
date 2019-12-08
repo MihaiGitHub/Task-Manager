@@ -1,6 +1,12 @@
 /* File that starts application */
-
 const express = require('express')
+
+// Ensure mongoose connects to database
+require('./db/mongoose')
+
+// Load user model
+const User = require('./models/user')
+
 const app = express()
 
 // Get default port; For deployment on Heroku; or localhost
@@ -11,8 +17,15 @@ app.use(express.json())
 
 // Create method for creating a new user
 app.post('/users', (req, res) => {
-    console.log(req.body)
-    res.send('testing')
+    // Get user data coming from POST request
+    const user = new User(req.body)
+
+    // Save user in database
+    user.save().then(() => {
+        res.send(user)
+    }).catch((error) => {
+        res.status(400).send(error)
+    })
 })
 
 app.listen(port, () => {
