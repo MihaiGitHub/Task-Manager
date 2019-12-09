@@ -25,7 +25,7 @@ app.post('/users', (req, res) => {
 
     // Save user in database
     user.save().then(() => {
-        res.send(user)
+        res.status(201).send(user)
     }).catch((error) => {
         res.status(400).send(error)
     })
@@ -38,7 +38,7 @@ app.post('/tasks', (req, res) => {
 
     // Save task in database
     task.save().then(() => {
-        res.send(task)
+        res.status(201).send(task)
     }).catch((error) => {
         res.status(400).send(error)
     })
