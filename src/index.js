@@ -31,6 +31,16 @@ app.post('/users', (req, res) => {
     })
 })
 
+// Create endpoint for fetching users
+app.get('/users', (req, res) => {
+    // Fetch all users in db
+    User.find({}).then((users) => {
+        res.send(users)
+    }).catch((error) => {
+        res.status(500).send()
+    })
+})
+
 // Create endpoint for creating a new task
 app.post('/tasks', (req, res) => {
     // Get task data coming from POST request
