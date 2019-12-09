@@ -46,6 +46,7 @@ app.get('/users/:id', (req, res) => {
     // Get user id from request params
     const _id = req.params.id
 
+    // Mongoose automatically converts string IDs to ObjectID
     User.findById(_id).then((user) => {
         if(!user){
             return res.status(404).send()
