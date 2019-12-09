@@ -41,6 +41,23 @@ app.get('/users', (req, res) => {
     })
 })
 
+// Create endpoint for fetching a particular user
+app.get('/users/:id', (req, res) => {
+    // Get user id from request params
+    const _id = req.params.id
+
+    User.findById(_id).then((user) => {
+        if(!user){
+            return res.status(404).send()
+        }
+
+        // Default status will be 200
+        res.send(user)
+    }).catch((error) => {
+        res.status(500).send(error)
+    })
+})
+
 // Create endpoint for creating a new task
 app.post('/tasks', (req, res) => {
     // Get task data coming from POST request
