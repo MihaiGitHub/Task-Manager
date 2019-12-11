@@ -72,6 +72,15 @@ app.post('/tasks', (req, res) => {
     })
 })
 
+// Create endpoint for fetching all tasks
+app.get('/tasks', (req, res) => {
+    Task.find((tasks) => {
+        res.send(tasks)
+    }).catch((error) => {
+        res.status(500).send()
+    })
+})
+
 app.listen(port, () => {
     console.log('Server is up on port ', + port)
 })
