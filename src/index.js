@@ -63,40 +63,44 @@ app.get('/users/:id', async (req, res) => {
 })
 
 // Create endpoint for creating a new task
-app.post('/tasks', (req, res) => {
-    // Get task data coming from POST request
-    const task = new Task(req.body)
+app.post('/tasks', async (req, res) => {
+    try {
+        // Get task data coming from POST request
+        const task = new Task(req.body)
 
-    // Save task in database
-    task.save().then(() => {
+        // Save task in database
+        await task.save()
         res.status(201).send(task)
-    }).catch((error) => {
-        res.status(400).send(error)
-    })
+
+    } catch (e) {
+        res.status(400).send(e)
+    }
 })
 
 // Create endpoint for fetching all tasks
-app.get('/tasks', (req, res) => {
-    Task.find((tasks) => {
+app.get('/tasks', async (req, res) => {
+    try {
+        const tasks = await Task.find()
         res.send(tasks)
-    }).catch((error) => {
+    } catch (e) {
         res.status(500).send()
-    })
+    }
 })
 
 // Create endpoint for fetching a particular task
-app.get('tasks/:id', (req, res) => {
-    const _id = req.params.id
+app.get('tasks/:id', async (req, res) => {
+    try {
+        const _id = req.params.id
+        const task = await Task.findById(_id)
 
-    Task.findById(_id).then((task) => {
         if(!task){
             return res.status(404).send()
         }
 
         res.send(task)
-    }).catch((error) => {
+    } catch (e) {
         res.status(500).send()
-    })
+    }
 })
 
 app.listen(port, () => {
