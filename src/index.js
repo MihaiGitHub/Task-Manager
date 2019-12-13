@@ -19,44 +19,47 @@ const port = process.env.PORT || 3000
 app.use(express.json())
 
 // Create endpoint for creating a new user
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     // Get user data coming from POST request
     const user = new User(req.body)
 
-    // Save user in database
-    user.save().then(() => {
+    try {
+        await user.save()
+        // Code below this line only runs if promise from above is fulfilled
         res.status(201).send(user)
-    }).catch((error) => {
-        res.status(400).send(error)
-    })
+    } catch (e) {
+        res.status(400).send(e)
+    }
 })
 
 // Create endpoint for fetching users
-app.get('/users', (req, res) => {
-    // Fetch all users in db
-    User.find({}).then((users) => {
+app.get('/users', async (req, res) => {
+    try {
+        const users = await User.find({})
         res.send(users)
-    }).catch((error) => {
+    } catch (e) {
         res.status(500).send()
-    })
+    }
 })
 
 // Create endpoint for fetching a particular user
-app.get('/users/:id', (req, res) => {
+app.get('/users/:id', async (req, res) => {
     // Get user id from request params
     const _id = req.params.id
 
-    // Mongoose automatically converts string IDs to ObjectID
-    User.findById(_id).then((user) => {
+    try {
+        // Mongoose automatically converts string IDs to ObjectID
+        const user = await User.findById(_id)
+
         if(!user){
             return res.status(404).send()
         }
 
         // Default status will be 200
         res.send(user)
-    }).catch((error) => {
-        res.status(500).send(error)
-    })
+    } catch (e) {
+        res.status(500).send(e)
+    }
 })
 
 // Create endpoint for creating a new task
