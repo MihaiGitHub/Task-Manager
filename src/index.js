@@ -62,6 +62,23 @@ app.get('/users/:id', async (req, res) => {
     }
 })
 
+// Create endpoint for updating existing user
+app.patch('/users/:id', async (req, res) => {
+
+    try {
+        // Return the new user with updated info and validate new info before updating
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+        if(!user){
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 // Create endpoint for creating a new task
 app.post('/tasks', async (req, res) => {
     try {
@@ -88,7 +105,7 @@ app.get('/tasks', async (req, res) => {
 })
 
 // Create endpoint for fetching a particular task
-app.get('tasks/:id', async (req, res) => {
+app.get('/tasks/:id', async (req, res) => {
     try {
         const _id = req.params.id
         const task = await Task.findById(_id)
