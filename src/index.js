@@ -91,6 +91,21 @@ app.patch('/users/:id', async (req, res) => {
     }
 })
 
+// Create endpoint for deleting user
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+
+        if(!user){
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 // Create endpoint for creating a new task
 app.post('/tasks', async (req, res) => {
     try {
@@ -129,6 +144,37 @@ app.get('/tasks/:id', async (req, res) => {
         res.send(task)
     } catch (e) {
         res.status(500).send()
+    }
+})
+
+// Create endpoint for updating existing task
+app.patch('/tasks/:id', async (req, res) => {
+    // Only allow certain properties to be updated
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['completed', 'description']
+
+    // Check to see if properties in the request body match the allowed updates
+    // every returns a single true/false if every item in the array meets a certain criteria
+    const isValidOperation = updates.every((update) => {
+        // returns a boolean if it includes update
+        return allowedUpdates.includes(update)
+    })
+
+    if(!isValidOperation){
+        return res.status(400).send({ error: 'Invalid updates' })
+    }
+
+    try {
+        // Return the new task with updated info and validate new info before updating
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+        if(!task){
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
