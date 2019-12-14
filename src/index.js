@@ -64,6 +64,18 @@ app.get('/users/:id', async (req, res) => {
 
 // Create endpoint for updating existing user
 app.patch('/users/:id', async (req, res) => {
+    // Only allow certain properties to be updated
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+    // every returns a single true/false if every item in the array meets a certain criteria
+    const isValidOperation = updates.every((update) => {
+        // returns a boolean if it includes update
+        return allowedUpdates.includes(update)
+    })
+
+    if(!isValidOperation){
+        return res.status(400).send({ error: 'Invalid updates' })
+    }
 
     try {
         // Return the new user with updated info and validate new info before updating
