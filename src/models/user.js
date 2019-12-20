@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         trim: true,
         lowercase: true,
         validate(value){
@@ -41,6 +42,25 @@ const userSchema = new mongoose.Schema({
         }
     }
 })
+
+// Custom function on userSchema to check if user provided correct password
+userSchema.statics.findByCredentials = async (email, password) => {
+    // Find the user
+    const user = await User.findOne({ email }) // email: email
+
+    if(!user){
+        throw new Error('Unable to login')
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if(!isMatch){
+        throw new Error('Unable to login')
+    }
+
+    return user
+}
 
 // Do something before user is saved using .pre
 // Second argument needs to be a standard function because 'this' plays an important role

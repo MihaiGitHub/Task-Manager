@@ -16,6 +16,18 @@ router.post('/users', async (req, res) => {
     }
 })
 
+// Create endpoint for signing in user
+router.post('/users/login', async (req, res) => {
+    try {
+        // Find the correct using custom function
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+
+        res.send(user)
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
 // Create endpoint for fetching users
 router.get('/users', async (req, res) => {
     try {
