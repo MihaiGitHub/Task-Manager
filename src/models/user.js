@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 // Added as middleware to user model
 const userSchema = new mongoose.Schema({
@@ -43,7 +44,21 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+// Standard function because need to use 'this' binding
+// Methods accessible on the instances (instance methods)
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+
+    // Generate json web token
+    // 1st argument is the payload that identifies the user (use user id) as string
+    // 2nd argument is the secret 
+    const token = jwt.sign({ _id: user._id.toString() }, 'thisisasecret')
+
+    return token
+}
+
 // Custom function on userSchema to check if user provided correct password
+// Static methods are accessible on the model (model methods)
 userSchema.statics.findByCredentials = async (email, password) => {
     // Find the user
     const user = await User.findOne({ email }) // email: email
