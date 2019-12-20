@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
-// Create user model
-const User = mongoose.model('User', {
+// Added as middleware to user model
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -40,5 +41,24 @@ const User = mongoose.model('User', {
         }
     }
 })
+
+// Do something before user is saved using .pre
+// Second argument needs to be a standard function because 'this' plays an important role
+userSchema.pre('save', async function (next) {
+    // this = the document that is being saved
+    const user = this
+
+    // Only hash the password if its been modified by the user
+    if(user.isModified('password')){
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    // call next when done
+    next()
+})
+
+// Create user model; Once the second object argument is passed in, mongoose converts it into a schema
+// 
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
