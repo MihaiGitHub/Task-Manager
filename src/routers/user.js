@@ -2,15 +2,18 @@ const express = require('express')
 const User = require('../models/user')
 const router = new express.Router()
 
-// Create endpoint for creating a new user
+// Create endpoint for creating a new user (sign up)
 router.post('/users', async (req, res) => {
     // Get user data coming from POST request
     const user = new User(req.body)
 
     try {
         await user.save()
+
+        const token = await user.generateAuthToken()
+
         // Code below this line only runs if promise from above is fulfilled
-        res.status(201).send(user)
+        res.status(201).send({ user, token })
     } catch (e) {
         res.status(400).send(e)
     }
