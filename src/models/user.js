@@ -41,7 +41,13 @@ const userSchema = new mongoose.Schema({
                 throw new Error('Password cannot contain "password"') 
             }
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
 // Standard function because need to use 'this' binding
@@ -53,6 +59,13 @@ userSchema.methods.generateAuthToken = async function () {
     // 1st argument is the payload that identifies the user (use user id) as string
     // 2nd argument is the secret 
     const token = jwt.sign({ _id: user._id.toString() }, 'thisisasecret')
+
+    // After token is created, add it to token array so it is saved on server
+    // Concat item to the tokens array
+    user.tokens = user.tokens.concat({ token }) // token: token
+
+    // Save token to database
+    await user.save()
 
     return token
 }

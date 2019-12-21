@@ -22,7 +22,7 @@ router.post('/users/login', async (req, res) => {
         // Find the correct using custom function
         const user = await User.findByCredentials(req.body.email, req.body.password)
 
-        // Function that returns the token and sends it to the user
+        // Function that returns the token and sends it to the client
         // Function will return a promise so it can do async things
         // Create this function to sit on the user instance
         const token = await user.generateAuthToken()
