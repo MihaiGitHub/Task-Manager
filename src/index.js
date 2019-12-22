@@ -12,6 +12,11 @@ const app = express()
 // Get default port; For deployment on Heroku; or localhost
 const port = process.env.PORT || 3000
 
+// Setup "Site under maintenance" middleware function
+app.use((req, res, next) => {
+    res.status(503).send('Site under maintenance')
+})
+
 // Automatically parse data as a JSON object in all request handlers
 app.use(express.json())
 
