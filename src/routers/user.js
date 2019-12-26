@@ -74,25 +74,25 @@ router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
 })
 
-// Create endpoint for fetching a particular user
-router.get('/users/:id', async (req, res) => {
-    // Get user id from request params
-    const _id = req.params.id
+// // Create endpoint for fetching a particular user
+// router.get('/users/:id', async (req, res) => {
+//     // Get user id from request params
+//     const _id = req.params.id
 
-    try {
-        // Mongoose automatically converts string IDs to ObjectID
-        const user = await User.findById(_id)
+//     try {
+//         // Mongoose automatically converts string IDs to ObjectID
+//         const user = await User.findById(_id)
 
-        if(!user){
-            return res.status(404).send()
-        }
+//         if(!user){
+//             return res.status(404).send()
+//         }
 
-        // Default status will be 200
-        res.send(user)
-    } catch (e) {
-        res.status(500).send(e)
-    }
-})
+//         // Default status will be 200
+//         res.send(user)
+//     } catch (e) {
+//         res.status(500).send(e)
+//     }
+// })
 
 // Create endpoint for updating existing user
 router.patch('/users/:id', async (req, res) => {
@@ -131,16 +131,13 @@ router.patch('/users/:id', async (req, res) => {
     }
 })
 
-// Create endpoint for deleting user
-router.delete('/users/:id', async (req, res) => {
+// Create endpoint for deleting own user profile
+router.delete('/users/me', auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id)
+        // Removes entire user that is authenticated
+        await req.user.remove()
 
-        if(!user){
-            return res.status(404).send()
-        }
-
-        res.send(user)
+        res.send(req.user)
     } catch (e) {
         res.status(500).send()
     }
