@@ -55,6 +55,20 @@ router.post('/users/logout', auth, async (req, res) => {
     }
 })
 
+router.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+        // Empty out all user tokens (logout of all device sessions)
+        req.user.tokens = []
+
+        // Save the user without the tokens
+        await req.user.save()
+
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 // Create endpoint for fetching user profile and add middleware auth
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
