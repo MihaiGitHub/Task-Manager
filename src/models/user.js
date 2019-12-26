@@ -50,6 +50,18 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+userSchema.methods.getPublicProfile = function () {
+    const user = this
+    // toObject() method provided by Mongoose to get raw user model data
+    const userObject = user.toObject()
+
+    // Delete user object properties before returning
+    delete userObject.password
+    delete userObject.tokens
+    
+    return userObject
+}
+
 // Standard function because need to use 'this' binding
 // Methods accessible on the instances (instance methods)
 userSchema.methods.generateAuthToken = async function () {
