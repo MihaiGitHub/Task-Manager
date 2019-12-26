@@ -37,6 +37,24 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+router.post('/users/logout', auth, async (req, res) => {
+    // Could have many different tokens corresponding to different logged in devices
+    // Remove only the token on the current device
+    try {
+        // Create a new array of tokens without the token from this request
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+
+        // Save the user without the token
+        await req.user.save()
+
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 // Create endpoint for fetching user profile and add middleware auth
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
