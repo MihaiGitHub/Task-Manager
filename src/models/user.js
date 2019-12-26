@@ -50,7 +50,8 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
-userSchema.methods.getPublicProfile = function () {
+// toJSON - allows this method to run on userSchema without even calling it
+userSchema.methods.toJSON = function () {
     const user = this
     // toObject() method provided by Mongoose to get raw user model data
     const userObject = user.toObject()
@@ -58,7 +59,7 @@ userSchema.methods.getPublicProfile = function () {
     // Delete user object properties before returning
     delete userObject.password
     delete userObject.tokens
-    
+
     return userObject
 }
 
