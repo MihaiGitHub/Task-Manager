@@ -15,6 +15,8 @@ const taskSchema = new mongoose.Schema({
         required: true,
         ref: 'User' // Reference the User model to fetch entire user profile
     }
+}, {
+    timestamps: true
 })
 
 // Create task model; Once the second object argument is passed in, mongoose converts it into a schema
