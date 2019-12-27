@@ -22,9 +22,9 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 // Create endpoint for fetching all tasks
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', auth, async (req, res) => {
     try {
-        const tasks = await Task.find()
+        const tasks = await Task.find({ owner: req.user._id })
         res.send(tasks)
     } catch (e) {
         res.status(500).send()
@@ -50,7 +50,7 @@ router.get('/tasks/:id', auth, async (req, res) => {
 })
 
 // Create endpoint for updating existing task
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
     // Only allow certain properties to be updated
     const updates = Object.keys(req.body)
     const allowedUpdates = ['completed', 'description']
@@ -67,8 +67,12 @@ router.patch('/tasks/:id', async (req, res) => {
     }
 
     try {
-        // Find the task
-        const task = await Task.findById(req.params.id)
+        // Find the task with this task id and owner id
+        const task = await Task.findOne({ _id: req.params.id, owner: req.user._id })
+
+        if(!task){
+            return res.status(404).send()
+        }
 
         // Apply the updates dynamically
         updates.forEach((update) => {
@@ -76,10 +80,6 @@ router.patch('/tasks/:id', async (req, res) => {
         })
 
         await task.save()
-
-        if(!task){
-            return res.status(404).send()
-        }
 
         res.send(task)
     } catch (e) {
