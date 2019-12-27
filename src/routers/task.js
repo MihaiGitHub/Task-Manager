@@ -22,12 +22,18 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 // Create endpoint for fetching all tasks
-// GET /tasks?limit=10&skip=20
+// GET /tasks?limit=10&skip=20&sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
 
     if(req.query.completed){
         match.completed = req.query.completed === 'true'
+    }
+
+    if(req.query.sortBy){
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
     }
 
     try {
@@ -37,7 +43,8 @@ router.get('/tasks', auth, async (req, res) => {
             match, // Match all the tasks you want to pull
             options: {
                 limit: parseInt(req.query.limit), // Query params are always strings and Mongoose expects integer
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort
             }
         }).execPopulate()
 
