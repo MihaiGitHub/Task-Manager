@@ -5,10 +5,13 @@ const router = new express.Router()
 
 // Create endpoint for creating a new task
 router.post('/tasks', auth, async (req, res) => {
-    try {
-        // Get task data coming from POST request
-        const task = new Task(req.body)
+    // Concatenate task owner with req body
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
+    })
 
+    try {
         // Save task in database
         await task.save()
         res.status(201).send(task)
