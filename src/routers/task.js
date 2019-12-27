@@ -22,6 +22,7 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 // Create endpoint for fetching all tasks
+// GET /tasks?limit=10&skip=20
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
 
@@ -33,7 +34,11 @@ router.get('/tasks', auth, async (req, res) => {
         // Populate tasks
         await req.user.populate({
             path: 'tasks',
-            match // Match all the tasks you want to pull
+            match, // Match all the tasks you want to pull
+            options: {
+                limit: parseInt(req.query.limit), // Query params are always strings and Mongoose expects integer
+                skip: parseInt(req.query.skip)
+            }
         }).execPopulate()
 
         res.send(req.user.tasks)
