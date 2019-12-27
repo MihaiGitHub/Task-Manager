@@ -32,11 +32,13 @@ router.get('/tasks', async (req, res) => {
 })
 
 // Create endpoint for fetching a particular task
-router.get('/tasks/:id', async (req, res) => {
-    try {
-        const _id = req.params.id
-        const task = await Task.findById(_id)
+router.get('/tasks/:id', auth, async (req, res) => {
+    const _id = req.params.id
 
+    try {
+        // Find ID limited by multiple fields
+        const task = await Task.findOne({ _id, owner: req.user._id })
+ 
         if(!task){
             return res.status(404).send()
         }

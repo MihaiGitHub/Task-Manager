@@ -50,6 +50,15 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+// Set up a virtual property - a relationship between the user and task
+// Virtual because not actually changing anything that is stored for the user document
+// A way for Mongoose to know how these two entities (user/tasks) are related
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id', // Where local data is stored
+    foreignField: 'owner' // Name of field on the task that will create this relationship
+})
+
 // toJSON - allows this method to run on userSchema without even calling it
 userSchema.methods.toJSON = function () {
     const user = this

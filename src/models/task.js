@@ -12,7 +12,8 @@ const taskSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User' // Reference the User model to fetch entire user profile
     }
 })
 
