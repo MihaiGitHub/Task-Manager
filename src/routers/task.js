@@ -1,9 +1,10 @@
 const express = require('express')
 const Task = require('../models/task')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 // Create endpoint for creating a new task
-router.post('/tasks', async (req, res) => {
+router.post('/tasks', auth, async (req, res) => {
     try {
         // Get task data coming from POST request
         const task = new Task(req.body)
