@@ -36,7 +36,7 @@ router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     try {
-        // Find ID limited by multiple fields
+        // Find task limited by multiple fields
         const task = await Task.findOne({ _id, owner: req.user._id })
  
         if(!task){
