@@ -1,7 +1,9 @@
 const express = require('express')
+const multer = require('multer')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
+
 
 // Create endpoint for creating a new user (sign up)
 router.post('/users', async (req, res) => {
@@ -133,6 +135,14 @@ router.delete('/users/me', auth, async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
+})
+
+const upload = multer({
+    dest: 'images' // Directory to save files
+})
+
+router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
+    res.send('File uploaded')
 })
 
 module.exports = router
