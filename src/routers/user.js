@@ -138,7 +138,7 @@ router.delete('/users/me', auth, async (req, res) => {
 })
 
 const upload = multer({
-    dest: 'images', // Directory to save files
+    // dest: 'images', // Directory to save files
     limits: {
         fileSize: 1000000 // 1 Megabyte
     },
@@ -152,7 +152,12 @@ const upload = multer({
     }
 })
 
-router.post('/users/me/avatar', auth, upload.single('avatar'), (req, res) => {
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    req.user.avatar = req.file.buffer // Contains a buffer of all binary data of a file
+
+    // Save user together with file binary data in the database
+    await req.user.save()
+
     res.send('File uploaded')
 }, (error, req, res, next) => {
     res.status(400).send({ error: error.message })
