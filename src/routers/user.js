@@ -173,4 +173,22 @@ router.delete('/users/me/avatar', auth, async (req, res) => {
     res.send('Avatar deleted')
 })
 
+// Endpoint for fetching user avatar file
+router.get('/users/:id/avatar', async (req, res) => {
+    // try catch since there is a change it might not find anything
+    try {
+        const user = await User.findById(req.params.id)
+
+        if(!user || !user.avatar){
+            throw new Error('No user with avatar found')
+        }
+
+        // Send image file to front-end
+        res.set('Content-Type', 'image/jpg')
+        res.send(user.avatar)
+    } catch (e) {
+        res.status(404).send()
+    }
+})
+
 module.exports = router
