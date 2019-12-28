@@ -152,6 +152,7 @@ const upload = multer({
     }
 })
 
+// Endpoint for uploading file
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
     req.user.avatar = req.file.buffer // Contains a buffer of all binary data of a file
 
@@ -161,6 +162,15 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
     res.send('File uploaded')
 }, (error, req, res, next) => {
     res.status(400).send({ error: error.message })
+})
+
+// Endpoint for deleting avatar file
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    req.user.avatar = undefined
+
+    await req.user.save()
+
+    res.send('Avatar deleted')
 })
 
 module.exports = router
