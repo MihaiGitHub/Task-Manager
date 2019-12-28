@@ -143,10 +143,9 @@ const upload = multer({
         fileSize: 1000000 // 1 Megabyte
     },
     fileFilter(req, file, cb){ // request, file, callback
-        // cb(new Error('File must be a PDF'))
-        // cb(undefined, true)
-        if(!file.originalname.match(/\.(doc|docx)$/)){
-            return cb(new Error('Please upload a word document'))
+
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            return cb(new Error('Please upload an image'))
         }
 
         cb(undefined, true)
