@@ -74,6 +74,7 @@ userSchema.methods.toJSON = function () {
     // Delete user object properties before returning
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar
 
     return userObject
 }
