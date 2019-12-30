@@ -10,7 +10,7 @@ const taskRouter = require('./routers/task')
 const app = express()
 
 // Get default port; For deployment on Heroku; or localhost
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 
 // // Setup "Site under maintenance" middleware function
 // app.use((req, res, next) => {
