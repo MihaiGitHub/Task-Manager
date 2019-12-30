@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
    try {
        // Access token from header of request
         const token = req.header('Authorization').replace('Bearer ', '')
-        const decoded = jwt.verify(token, 'thisisasecret') // Use same secret used to generate it
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) // Use same secret used to generate it
         
         // User ID was used to generate the token and can be retrieved during decoding
         // Also check if this token is still part of the users tokens array

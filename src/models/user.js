@@ -87,7 +87,7 @@ userSchema.methods.generateAuthToken = async function () {
     // Generate json web token
     // 1st argument is the payload that identifies the user (use user id) as string
     // 2nd argument is the secret 
-    const token = jwt.sign({ _id: user._id.toString() }, 'thisisasecret')
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
 
     // After token is created, add it to token array so it is saved on server
     // Concat item to the tokens array
