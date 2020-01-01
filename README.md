@@ -11,3 +11,7 @@ To get the Node server running locally:
 `npm install` <br>
 &nbsp;Install MongoDB Community Edition and run it by executing `mongod`<br>
 `npm run dev`
+
+## Running Tests
+
+`npm test`
