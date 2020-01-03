@@ -1,4 +1,6 @@
 const request = require('supertest')
+const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
 
 /* Load app for testing purpose */
 const app = require('../src/app')
@@ -7,10 +9,15 @@ const app = require('../src/app')
 const User = require('../src/models/user')
 
 /* Create a test user */
+const userOneId = new mongoose.Types.ObjectId()
 const userOne = {
+    _id: userOneId,
     name: 'John',
     email: 'fedor@yahoo.com',
-    password: 'Hdhss87$#'
+    password: 'Hdhss87$#',
+    tokens: [{
+        token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET)
+    }]
 }
 
 /* Function to run before each test case in this test suite */
@@ -45,5 +52,15 @@ test('Should login existing user', async () => {
         email: userOne.email,
         password: userOne.password
     }).expect(200)
+
+})
+
+test('Should not login nonexistent user', async () => {
+
+    // Send data object to user login endpoint
+    await request(app).post('/users/login').send({
+        email: userOne.email,
+        password: 'Anotherpass564'
+    }).expect(400)
 
 })
