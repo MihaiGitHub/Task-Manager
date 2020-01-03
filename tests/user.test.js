@@ -63,13 +63,16 @@ test('Should signup a new user', async () => {
 
 test('Should login existing user', async () => {
     // Send data object to user login endpoint
-    await request(app)
+    const response = await request(app)
         .post('/users/login')
         .send({
             email: userOne.email,
             password: userOne.password
         })
         .expect(200)
+        
+    const user = await User.findById(userOneId)
+    expect(response.body.token).toBe(user.tokens[1].token)
 })
 
 test('Should not login nonexistent user', async () => {
@@ -106,6 +109,11 @@ test('Should delete authenticated user', async () => {
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
+
+    const user = await User.findById(userOneId)
+
+    // Assert that user is null
+    expect(user).toBeNull()
 })
 
 test('Should not delete unauthenticated user', async () => {
