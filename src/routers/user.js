@@ -6,7 +6,6 @@ const auth = require('../middleware/auth')
 const { sendWelcomeEmail, sendCancelEmail } = require('../emails/account')
 const router = new express.Router()
 
-
 // Create endpoint for creating a new user (sign up)
 router.post('/users', async (req, res) => {
     // Get user data coming from POST request
