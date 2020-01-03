@@ -35,40 +35,59 @@ afterEach(() => {
 })
 
 test('Should signup a new user', async () => {
-
     // Send data object to user signup endpoint
-    await request(app).post('/users').send({
-        name: 'Fedor',
-        email: 'fedor@gmail.com',
-        password: 'Pds56h789'
-    }).expect(201)
-
+    await request(app)
+        .post('/users')
+        .send({
+            name: 'Fedor',
+            email: 'fedor@gmail.com',
+            password: 'Pds56h789'
+        })
+        .expect(201)
 })
 
 test('Should login existing user', async () => {
-
     // Send data object to user login endpoint
-    await request(app).post('/users/login').send({
-        email: userOne.email,
-        password: userOne.password
-    }).expect(200)
-
+    await request(app)
+        .post('/users/login')
+        .send({
+            email: userOne.email,
+            password: userOne.password
+        })
+        .expect(200)
 })
 
 test('Should not login nonexistent user', async () => {
-
     // Send data object to user login endpoint
-    await request(app).post('/users/login').send({
-        email: userOne.email,
-        password: 'Anotherpass564'
-    }).expect(400)
-
+    await request(app)
+        .post('/users/login')
+        .send({
+            email: userOne.email,
+            password: 'Anotherpass564'
+        })
+        .expect(400)
 })
 
 test('Should get profile for user', async () => {
     // Set Authorization header with the token created above
     await request(app)
         .get('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+})
+
+test('Should not get profile for unauthorized user', async () => {
+    // Set request without auth token
+    await request(app)
+        .get('/users/me')
+        .send()
+        .expect(401)
+})
+
+test('Should delete authenticated user', async () => {
+    await request(app)
+        .delete('/users/me')
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
