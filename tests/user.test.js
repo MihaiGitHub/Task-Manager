@@ -35,8 +35,8 @@ afterEach(() => {
 })
 
 test('Should signup a new user', async () => {
-    // Send data object to user signup endpoint
-    await request(app)
+    // Send data object to user signup endpoint and store response in variable
+    const response = await request(app)
         .post('/users')
         .send({
             name: 'Fedor',
@@ -44,6 +44,10 @@ test('Should signup a new user', async () => {
             password: 'Pds56h789'
         })
         .expect(201)
+
+    // Assert that the database was changed correctly
+    const user = await User.findById(response.body.user._id)
+    expect(user).not.toBeNull()
 })
 
 test('Should login existing user', async () => {
