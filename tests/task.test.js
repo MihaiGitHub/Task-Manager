@@ -1,7 +1,16 @@
 const request = require('supertest')
 const app = require('../src/app')
 const Task = require('../src/models/task')
-const { userOneId, userOne, setupDatabase } = require('./fixtures/db')
+const { 
+    userOneId, 
+    userOne, 
+    userTwoId,
+    userTwo,
+    taskOne,
+    taskTwo,
+    taskThree,
+    setupDatabase 
+} = require('./fixtures/db')
 
 /* Function to run before each test case in this test suite */
 beforeEach(setupDatabase)
@@ -29,4 +38,16 @@ test('Should return all tasks for user', async () => {
 
         // userOne only has 2 tasks
         expect(response.body.length).toEqual(2)
+})
+
+test('Should not delete other users tasks', async () => {
+    const response = await request(app)
+        .delete(`/tasks/${taskOne._id}`)
+        .set('Authorization', `Bearer ${userTwo.tokens[0].token}`)
+        .send()
+        .expect(404)
+
+        // Make sure the task is still in database and not deleted
+        const task = await Task.findById(taskOne._id)
+        expect(task).not.toBeNull()
 })
