@@ -1,6 +1,4 @@
 const request = require('supertest')
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
 
 /* Load app for testing purpose */
 const app = require('../src/app')
@@ -8,26 +6,10 @@ const app = require('../src/app')
 /* Load in User model for testing */
 const User = require('../src/models/user')
 
-/* Create a test user */
-const userOneId = new mongoose.Types.ObjectId()
-const userOne = {
-    _id: userOneId,
-    name: 'John',
-    email: 'fedor@yahoo.com',
-    password: 'Hdhss87$#',
-    tokens: [{
-        token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET)
-    }]
-}
+const { userOneId, userOne, setupDatabase } = require('./fixtures/db')
 
 /* Function to run before each test case in this test suite */
-beforeEach(async () => {
-    /* Delete all users before running each test case */
-    await  User.deleteMany()
-
-    /* Save test user to database after deleteMany to test other endpoints */
-    await new User(userOne).save()
-})
+beforeEach(setupDatabase)
 
 /* Function to run after each test case in this test suite */
 afterEach(() => {
