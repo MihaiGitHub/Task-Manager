@@ -19,3 +19,14 @@ test('Should create task for user', async () => {
         expect(task).not.toBeNull()
         expect(task.completed).toEqual(false)
 })
+
+test('Should return all tasks for user', async () => {
+    const response = await request(app)
+        .get('/tasks')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+        // userOne only has 2 tasks
+        expect(response.body.length).toEqual(2)
+})
